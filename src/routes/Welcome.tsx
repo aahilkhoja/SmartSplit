@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useStore } from '../lib/store'
+import { SplashIntro } from '../components/SplashIntro'
 
 export function Welcome() {
   const { state } = useStore()
 
   return (
     <div className="flex-1 flex flex-col justify-center px-6 py-8 text-center">
+      <SplashIntro />
       <h1 className="font-heading text-3xl leading-tight text-onbg">
         Your paycheck gets a <span className="text-accent">plan</span> before you spend it.
       </h1>
