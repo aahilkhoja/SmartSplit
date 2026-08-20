@@ -33,9 +33,18 @@ export function SplashIntro() {
 
   if (stage === 'done') return null
 
-  const showMark = stage === 'mark' || stage === 'markSmall' || stage === 'wordmark'
-  const markShrunk = stage === 'markSmall' || stage === 'wordmark'
   const showWordmark = stage === 'wordmark'
+  const markShrunk = stage === 'markSmall' || stage === 'wordmark'
+
+  // Each element gets exactly one opacity/scale/size class computed here —
+  // never combine multiple conditional Tailwind classes for the same CSS
+  // property on one element. Stacking e.g. both "opacity-100" and "opacity-0"
+  // in a className string doesn't "average" them or let the later one win by
+  // JS logic; the browser resolves the conflict by generated-stylesheet order,
+  // which silently froze this splash mid-crossfade instead of animating.
+  const markOpacity = showWordmark ? 'opacity-0' : stage === 'blank' ? 'opacity-0 scale-50' : 'opacity-100'
+  const markSize = markShrunk ? 'w-14 h-14' : 'w-32 h-32'
+  const wordmarkOpacity = showWordmark ? 'opacity-100' : 'opacity-0'
 
   return (
     <div
@@ -47,20 +56,12 @@ export function SplashIntro() {
       <div className="relative flex items-center justify-center">
         {/* Symbol-only mark: fades/scales in large, then shrinks before the
             wordmark crossfades over it. */}
-        <img
-          src={logoMark}
-          alt=""
-          className={`transition-all ease-out ${showMark ? 'opacity-100' : 'opacity-0 scale-50'} ${
-            showWordmark ? 'opacity-0' : ''
-          } ${markShrunk ? 'w-14 h-14 duration-500' : 'w-32 h-32 duration-500'}`}
-        />
+        <img src={logoMark} alt="" className={`transition-all duration-500 ease-out ${markOpacity} ${markSize}`} />
         {/* Full wordmark crossfades in over the mark's resting position. */}
         <img
           src={logoWordmark}
           alt="SmartSplit"
-          className={`absolute w-56 transition-opacity duration-500 ease-out ${
-            showWordmark ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute w-56 transition-opacity duration-500 ease-out ${wordmarkOpacity}`}
         />
       </div>
       <p
