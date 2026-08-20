@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #060b12;
+  --color-surface: #0d141f;
+  --color-surface-2: #141d2b;
+  --color-accent: #36f1c7;
+  --color-accent-2: #00d4ff;
+  --color-muted: #8a93a3;
+  --color-danger: #ff6b5b;
+  --color-onbg: #ffffff;
+
+  --font-heading: "Fredoka One", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-onbg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+
+input[type="range"] {
+  accent-color: var(--color-accent);
+}
