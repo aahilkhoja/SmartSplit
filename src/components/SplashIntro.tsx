@@ -43,7 +43,7 @@ export function SplashIntro() {
   // JS logic; the browser resolves the conflict by generated-stylesheet order,
   // which silently froze this splash mid-crossfade instead of animating.
   const markOpacity = showWordmark ? 'opacity-0' : stage === 'blank' ? 'opacity-0 scale-50' : 'opacity-100'
-  const markSize = markShrunk ? 'w-14 h-14' : 'w-32 h-32'
+  const markSize = markShrunk ? 'w-12 h-12' : 'w-28 h-28'
   const wordmarkOpacity = showWordmark ? 'opacity-100' : 'opacity-0'
 
   return (
@@ -55,13 +55,22 @@ export function SplashIntro() {
     >
       <div className="relative flex items-center justify-center">
         {/* Symbol-only mark: fades/scales in large, then shrinks before the
-            wordmark crossfades over it. */}
-        <img src={logoMark} alt="" className={`transition-all duration-500 ease-out ${markOpacity} ${markSize}`} />
+            wordmark crossfades over it. max-w-none overrides Tailwind's
+            preflight ("img{max-width:100%}") — without it, the *wordmark*
+            below (absolute, so it doesn't contribute to this wrapper's
+            shrink-to-fit width) gets clamped to whatever narrow width this
+            in-flow mark image happens to define the wrapper as, instead of
+            its own intended size. */}
+        <img
+          src={logoMark}
+          alt=""
+          className={`max-w-none transition-all duration-500 ease-out ${markOpacity} ${markSize}`}
+        />
         {/* Full wordmark crossfades in over the mark's resting position. */}
         <img
           src={logoWordmark}
           alt="SmartSplit"
-          className={`absolute w-56 transition-opacity duration-500 ease-out ${wordmarkOpacity}`}
+          className={`absolute max-w-none w-60 transition-opacity duration-500 ease-out ${wordmarkOpacity}`}
         />
       </div>
       <p
