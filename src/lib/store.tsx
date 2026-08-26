@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { AppState, Alert, BucketId, OnboardingDraft, Plan, Transaction, UserProfile } from '../types'
 import { seedBuckets, seedTransactions } from './mockData'
-import { monthlySpend } from './spend'
+import { spentThisCycle } from './spend'
 
 const STORAGE_KEY = 'smartsplit.state.v2'
 
@@ -15,6 +15,7 @@ function freshState(): AppState {
     alerts: [],
     onboardingComplete: false,
     onboardingDraft: {},
+    cycleStart: new Date().toISOString(),
   }
 }
 
@@ -85,6 +86,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       plan: { ...plan, confirmedAt: new Date().toISOString() },
       onboardingComplete: true,
       onboardingDraft: {},
+      cycleStart: new Date().toISOString(),
     }))
   }
 
@@ -126,13 +128,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           invest: Math.round((s.buckets.invest + splitAmounts.invest) * 100) / 100,
         },
         transactions: [...newTransactions, ...s.transactions],
+        // A new paycheck landing starts a fresh spend-guideline cycle — this
+        // is what actually makes the meter reset, since real time never
+        // advances in this demo.
+        cycleStart: now,
       }
     })
   }
 
   const recordSpend = (amount: number, label: string) => {
     setState((s) => {
-      const spentBefore = monthlySpend(s.transactions)
+      const spentBefore = spentThisCycle(s.transactions, s.cycleStart)
       const spentAfter = spentBefore + amount
       const newTx: Transaction = {
         id: makeId('tx'),

@@ -4,7 +4,7 @@ import { useStore } from '../lib/store'
 import { BucketCard } from '../components/BucketCard'
 import { TransactionList } from '../components/TransactionList'
 import { SpendLimitMeter } from '../components/SpendLimitMeter'
-import { monthlySpend } from '../lib/spend'
+import { spentThisCycle } from '../lib/spend'
 import { IconBook, IconPieChart } from '../components/icons'
 
 const QUICK_LINKS = [
@@ -14,9 +14,9 @@ const QUICK_LINKS = [
 
 export function Dashboard() {
   const { state, simulatePaycheck, recordSpend } = useStore()
-  const { profile, plan, buckets, transactions, auth } = state
+  const { profile, plan, buckets, transactions, auth, cycleStart } = state
 
-  const spentThisCycle = useMemo(() => monthlySpend(transactions), [transactions])
+  const cycleSpend = useMemo(() => spentThisCycle(transactions, cycleStart), [transactions, cycleStart])
 
   const handleSimulateSpend = () => {
     const mocks = [
@@ -64,7 +64,7 @@ export function Dashboard() {
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-surface p-4">
-        <SpendLimitMeter spent={spentThisCycle} limit={plan.spendLimit} />
+        <SpendLimitMeter spent={cycleSpend} limit={plan.spendLimit} />
       </div>
 
       <div className="grid grid-cols-2 gap-3">

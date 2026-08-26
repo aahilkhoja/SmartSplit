@@ -100,4 +100,10 @@ export interface AppState {
   alerts: Alert[]
   onboardingComplete: boolean
   onboardingDraft: OnboardingDraft
+  /** ISO timestamp marking the start of the current spend-guideline cycle.
+   * Reset to "now" whenever a paycheck is simulated, since this demo never
+   * advances real calendar time — without this, "monthly" spend was measured
+   * against the real calendar month and could never reset no matter how many
+   * paychecks you simulated in one sitting. */
+  cycleStart: string
 }
