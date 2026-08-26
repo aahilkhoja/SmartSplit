@@ -46,10 +46,17 @@ export function investmentAllocation(): InvestmentSlice[] {
   ]
 }
 
-/** Six months of mock income/expense totals for the Statistics screen. */
-export function incomeExpenseTrend(monthlyIncome: number): TrendPoint[] {
-  const months = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug']
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** The 6 real calendar months ending at the current one, e.g. run this in
+ * December and it labels Jul-Dec, not a hardcoded "Mar-Aug" year-round. */
+export function incomeExpenseTrend(monthlyIncome: number, now = new Date()): TrendPoint[] {
   const expenseRatios = [0.62, 0.58, 0.7, 0.55, 0.66, 0.6]
+  const months: string[] = []
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    months.push(MONTH_NAMES[d.getMonth()])
+  }
   return months.map((month, i) => ({
     month,
     income: Math.round(monthlyIncome),

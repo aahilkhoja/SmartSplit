@@ -3,7 +3,21 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
 import { SplitSliders } from '../components/SplitSliders'
 import { IconCheckCircle } from '../components/icons'
-import type { IncomeBasis, ResidencyStatus, WorkType } from '../types'
+import { BIG_THREE } from '../lib/splitEngine'
+import type { IncomeBasis, PlanChoice, ResidencyStatus, WorkType } from '../types'
+
+/** Whichever named plan the split now matches, or 'custom' if it no longer
+ * matches any — so editing the sliders can't silently leave a stale label
+ * like "growth" attached to a split that isn't 25/25/50 anymore. */
+function resolveChoice(split: { spendPct: number; savePct: number; investPct: number }): PlanChoice {
+  const match = (Object.keys(BIG_THREE) as (keyof typeof BIG_THREE)[]).find(
+    (key) =>
+      BIG_THREE[key].spendPct === split.spendPct &&
+      BIG_THREE[key].savePct === split.savePct &&
+      BIG_THREE[key].investPct === split.investPct,
+  )
+  return match ?? 'custom'
+}
 
 export function Profile() {
   const { state, updatePlan, setProfile, signOut, resetAll } = useStore()
@@ -34,7 +48,7 @@ export function Profile() {
   if (!profile || !plan) return <Navigate to="/onboarding/status" replace />
 
   const handleSave = () => {
-    updatePlan({ choice: plan.choice, ...split, spendLimit })
+    updatePlan({ choice: resolveChoice(split), ...split, spendLimit })
     setProfile({ status, workType, incomeAmount: Number(incomeAmount) || profile.incomeAmount, incomeBasis })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)

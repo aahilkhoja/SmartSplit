@@ -18,8 +18,13 @@ export function SplitSliders({ spendPct, savePct, investPct, onChange }: SplitSl
 
     let next = { ...current, [key]: value }
     if (otherTotal === 0) {
-      next[others[0]] = remaining
-      next[others[1]] = 0
+      // Both other sliders are at 0% — split what's freed up evenly between
+      // them instead of dumping it all into others[0]. Otherwise, from this
+      // corner, others[1] could never receive anything until the user first
+      // nudged others[0] away from 0 by hand.
+      const half = Math.round(remaining / 2)
+      next[others[0]] = half
+      next[others[1]] = remaining - half
     } else {
       next[others[0]] = Math.round((current[others[0]] / otherTotal) * remaining)
       next[others[1]] = remaining - next[others[0]]

@@ -1,5 +1,6 @@
 import type { BucketId } from '../types'
 import { IconPiggyBank, IconTrendingUp, IconWallet } from './icons'
+import { formatCurrency } from '../lib/format'
 
 const BUCKET_META: Record<
   BucketId,
@@ -38,7 +39,7 @@ export function BucketCard({ bucket, balance }: { bucket: BucketId; balance: num
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium text-muted">{meta.label}</p>
-        <p className="text-2xl font-heading tabular-nums text-onbg leading-tight">${balance.toFixed(2)}</p>
+        <p className="text-2xl font-heading tabular-nums text-onbg leading-tight">{formatCurrency(balance)}</p>
         <p className="text-[11px] text-muted">{meta.blurb}</p>
       </div>
     </div>

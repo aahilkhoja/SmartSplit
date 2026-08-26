@@ -2,6 +2,7 @@ import { Navigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
 import { categoryBreakdown } from '../lib/mockData'
 import { IconPiggyBank, IconTrendingUp, IconWallet } from '../components/icons'
+import { formatCurrency } from '../lib/format'
 import type { BucketId } from '../types'
 
 const BUCKET_META: Record<
@@ -43,7 +44,7 @@ export function PlanDetail() {
                 </div>
                 <h2 className="text-sm font-semibold text-onbg">{meta.label}</h2>
               </div>
-              <span className="text-sm tabular-nums text-accent">${buckets[bucket].toFixed(2)}</span>
+              <span className="text-sm tabular-nums text-accent">{formatCurrency(buckets[bucket])}</span>
             </div>
             <div className="h-2 w-full rounded-full overflow-hidden flex bg-surface-2">
               {bucketSlices.map((s, i) => (
