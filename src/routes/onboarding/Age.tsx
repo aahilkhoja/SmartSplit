@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
+import { Dropdown } from '../../components/Dropdown'
 import { useStore } from '../../lib/store'
 
 const MIN_AGE = 18
@@ -42,8 +43,6 @@ function parseISODate(iso: string | undefined): { year: number | null; month: nu
   return { year: y || null, month: m || null, day: d || null }
 }
 
-const selectClass = 'w-full bg-transparent px-3 py-2.5 text-sm text-onbg outline-none'
-
 export function OnboardingAge() {
   const navigate = useNavigate()
   const { state, updateOnboardingDraft } = useStore()
@@ -59,6 +58,13 @@ export function OnboardingAge() {
   const years = useMemo(() => Array.from({ length: MAX_AGE + 1 }, (_, i) => currentYear - i), [currentYear])
   const maxDay = month && year ? daysInMonth(year, month) : 31
   const days = useMemo(() => Array.from({ length: maxDay }, (_, i) => i + 1), [maxDay])
+
+  const monthOptions = useMemo(
+    () => MONTHS.map((name, i) => ({ value: String(i + 1), label: name })),
+    [],
+  )
+  const dayOptions = useMemo(() => days.map((d) => ({ value: String(d), label: String(d) })), [days])
+  const yearOptions = useMemo(() => years.map((y) => ({ value: String(y), label: String(y) })), [years])
 
   // Changing month/year can invalidate an already-picked day (e.g. day 31 with
   // April selected) — clamp it down instead of leaving a now-impossible date.
@@ -97,66 +103,30 @@ export function OnboardingAge() {
       <div className="mt-6">
         <span className="text-xs font-medium text-muted">Date of birth</span>
         <div className="mt-1 grid grid-cols-[1.4fr_1fr_1fr] gap-2">
-          <div className="rounded-xl border border-white/10 bg-surface focus-within:border-accent">
-            <label htmlFor="dob-month" className="sr-only">
-              Month
-            </label>
-            <select
-              id="dob-month"
-              value={month ?? ''}
-              onChange={(e) => handleMonthChange(e.target.value)}
-              className={selectClass}
-            >
-              <option value="" disabled>
-                Month
-              </option>
-              {MONTHS.map((name, i) => (
-                <option key={name} value={i + 1}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="rounded-xl border border-white/10 bg-surface focus-within:border-accent">
-            <label htmlFor="dob-day" className="sr-only">
-              Day
-            </label>
-            <select
-              id="dob-day"
-              value={day ?? ''}
-              onChange={(e) => setDay(e.target.value ? Number(e.target.value) : null)}
-              className={selectClass}
-            >
-              <option value="" disabled>
-                Day
-              </option>
-              {days.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="rounded-xl border border-white/10 bg-surface focus-within:border-accent">
-            <label htmlFor="dob-year" className="sr-only">
-              Year
-            </label>
-            <select
-              id="dob-year"
-              value={year ?? ''}
-              onChange={(e) => handleYearChange(e.target.value)}
-              className={selectClass}
-            >
-              <option value="" disabled>
-                Year
-              </option>
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Dropdown
+            id="dob-month"
+            ariaLabel="Month"
+            placeholder="Month"
+            value={month != null ? String(month) : ''}
+            options={monthOptions}
+            onChange={handleMonthChange}
+          />
+          <Dropdown
+            id="dob-day"
+            ariaLabel="Day"
+            placeholder="Day"
+            value={day != null ? String(day) : ''}
+            options={dayOptions}
+            onChange={(v) => setDay(v ? Number(v) : null)}
+          />
+          <Dropdown
+            id="dob-year"
+            ariaLabel="Year"
+            placeholder="Year"
+            value={year != null ? String(year) : ''}
+            options={yearOptions}
+            onChange={handleYearChange}
+          />
         </div>
         {isUnderage && (
           <p className="mt-2 text-xs text-danger">You need to be 18 or older to create a SmartSplit account.</p>
