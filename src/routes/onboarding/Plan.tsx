@@ -20,7 +20,7 @@ export function OnboardingPlan() {
       : { spendPct: 34, savePct: 33, investPct: 33 },
   )
 
-  if (!profile) return <Navigate to="/onboarding/status" replace />
+  if (!profile) return <Navigate to="/onboarding/age" replace />
 
   const recommended = recommendPlanChoice(profile.status, profile.workType)
 
@@ -37,7 +37,7 @@ export function OnboardingPlan() {
   }
 
   return (
-    <OnboardingLayout step={3}>
+    <OnboardingLayout step={4}>
       <h1 className="font-heading text-2xl text-onbg">Choose your plan</h1>
       <p className="text-xs text-muted mt-1">
         Based on your answers, we think {BIG_THREE[recommended].title} fits you well — but it's your call.

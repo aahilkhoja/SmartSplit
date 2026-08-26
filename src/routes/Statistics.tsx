@@ -10,7 +10,7 @@ export function Statistics() {
 
   const trend = useMemo(() => incomeExpenseTrend(profile?.incomeAmount ?? 0), [profile])
 
-  if (!profile || !plan) return <Navigate to="/onboarding/status" replace />
+  if (!profile || !plan) return <Navigate to="/onboarding/age" replace />
 
   const savingsRate = plan.savePct + plan.investPct
 

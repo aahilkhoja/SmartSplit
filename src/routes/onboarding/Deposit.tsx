@@ -14,7 +14,7 @@ export function OnboardingDeposit() {
   const [spendLimit, setSpendLimit] = useState(draft.spendLimit ?? defaultLimit)
 
   if (!profile || !draft.planChoice || draft.spendPct == null || draft.savePct == null || draft.investPct == null) {
-    return <Navigate to="/onboarding/status" replace />
+    return <Navigate to="/onboarding/age" replace />
   }
 
   const amounts = {
@@ -40,7 +40,7 @@ export function OnboardingDeposit() {
   }
 
   return (
-    <OnboardingLayout step={4}>
+    <OnboardingLayout step={5}>
       <h1 className="font-heading text-2xl text-onbg">Your first deposit</h1>
       <p className="text-xs text-muted mt-1">
         Here's how each paycheck will route into your Spend, Save, and Invest accounts.

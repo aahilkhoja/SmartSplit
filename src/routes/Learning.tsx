@@ -20,7 +20,7 @@ export function Learning() {
     [buckets.invest, monthlyContribution],
   )
 
-  if (!profile || !plan) return <Navigate to="/onboarding/status" replace />
+  if (!profile || !plan) return <Navigate to="/onboarding/age" replace />
 
   const allocation = investmentAllocation()
 

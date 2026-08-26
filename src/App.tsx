@@ -7,6 +7,7 @@ import { AppShell } from './components/AppShell'
 import { Welcome } from './routes/Welcome'
 import { SignIn } from './routes/SignIn'
 import { SignUp } from './routes/SignUp'
+import { OnboardingAge } from './routes/onboarding/Age'
 import { OnboardingStatus } from './routes/onboarding/Status'
 import { OnboardingWorkType } from './routes/onboarding/WorkType'
 import { OnboardingIncome } from './routes/onboarding/Income'
@@ -36,6 +37,7 @@ function App() {
               <Route index element={<Welcome />} />
               <Route path="signin" element={<SignIn />} />
               <Route path="signup" element={<SignUp />} />
+              <Route path="onboarding/age" element={<OnboardingAge />} />
               <Route path="onboarding/status" element={<OnboardingStatus />} />
               <Route path="onboarding/work-type" element={<OnboardingWorkType />} />
               <Route path="onboarding/income" element={<OnboardingIncome />} />

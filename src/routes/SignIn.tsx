@@ -19,7 +19,7 @@ export function SignIn() {
     if (!canSubmit) return
     const fallbackName = email.split('@')[0] || 'there'
     signIn(state.auth.displayName || fallbackName)
-    navigate(state.onboardingComplete ? '/dashboard' : '/onboarding/status')
+    navigate(state.onboardingComplete ? '/dashboard' : '/onboarding/age')
   }
 
   return (

@@ -20,7 +20,7 @@ export function OnboardingWorkType() {
   }
 
   return (
-    <OnboardingLayout step={1}>
+    <OnboardingLayout step={2}>
       <h1 className="font-heading text-2xl text-onbg">What's your work schedule?</h1>
       <p className="text-xs text-muted mt-1">Variable hours make monthly planning harder — we'll account for that.</p>
 

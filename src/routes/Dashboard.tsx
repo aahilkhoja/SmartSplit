@@ -32,7 +32,7 @@ export function Dashboard() {
   }
 
   if (!profile || !plan) {
-    return <Navigate to="/onboarding/status" replace />
+    return <Navigate to="/onboarding/age" replace />
   }
 
   return (

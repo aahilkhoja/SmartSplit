@@ -24,7 +24,7 @@ export function SignUp() {
     e.preventDefault()
     if (!canSubmit) return
     signUp(name.trim(), username.trim())
-    navigate('/onboarding/status')
+    navigate('/onboarding/age')
   }
 
   return (

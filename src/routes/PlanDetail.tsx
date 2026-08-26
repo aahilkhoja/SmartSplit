@@ -17,7 +17,7 @@ const BUCKET_META: Record<
 export function PlanDetail() {
   const { state } = useStore()
   const { plan, buckets } = state
-  if (!plan) return <Navigate to="/onboarding/status" replace />
+  if (!plan) return <Navigate to="/onboarding/age" replace />
 
   const slices = categoryBreakdown()
   const bucketIds: BucketId[] = ['spend', 'save', 'invest']

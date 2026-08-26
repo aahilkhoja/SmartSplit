@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
 import { IconCheckCircle } from '../../components/icons'
 import { useStore } from '../../lib/store'
@@ -15,6 +15,8 @@ export function OnboardingStatus() {
   const { state, updateOnboardingDraft } = useStore()
   const [status, setStatus] = useState<ResidencyStatus | null>(state.onboardingDraft.status ?? null)
 
+  if (state.onboardingDraft.age == null) return <Navigate to="/onboarding/age" replace />
+
   const handleContinue = () => {
     if (!status) return
     updateOnboardingDraft({ status })
@@ -22,7 +24,7 @@ export function OnboardingStatus() {
   }
 
   return (
-    <OnboardingLayout step={0}>
+    <OnboardingLayout step={1}>
       <h1 className="font-heading text-2xl text-onbg">Are you international or domestic?</h1>
       <p className="text-xs text-muted mt-1">This helps us recommend the right starting plan.</p>
 

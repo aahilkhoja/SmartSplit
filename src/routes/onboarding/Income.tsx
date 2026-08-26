@@ -31,7 +31,7 @@ export function OnboardingIncome() {
   }
 
   return (
-    <OnboardingLayout step={2}>
+    <OnboardingLayout step={3}>
       <h1 className="font-heading text-2xl text-onbg">How much do you make monthly?</h1>
       <p className="text-xs text-muted mt-1">A rough number is fine — you can always adjust later.</p>
 

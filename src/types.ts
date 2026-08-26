@@ -84,6 +84,7 @@ export interface TrendPoint {
  * step (or refreshing mid-flow) restores what was already entered instead of
  * resetting it. Cleared once the plan is confirmed. */
 export interface OnboardingDraft {
+  age?: number
   status?: ResidencyStatus
   workType?: WorkType
   incomeAmount?: number

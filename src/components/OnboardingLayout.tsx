@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const STEP_LABELS = ['Status', 'Work type', 'Income', 'Plan', 'Deposit']
+const STEP_LABELS = ['Age', 'Status', 'Work type', 'Income', 'Plan', 'Deposit']
 
 export function OnboardingLayout({ step, children }: { step: number; children: ReactNode }) {
   const navigate = useNavigate()
