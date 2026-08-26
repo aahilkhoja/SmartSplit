@@ -15,7 +15,7 @@ export function OnboardingStatus() {
   const { state, updateOnboardingDraft } = useStore()
   const [status, setStatus] = useState<ResidencyStatus | null>(state.onboardingDraft.status ?? null)
 
-  if (state.onboardingDraft.age == null) return <Navigate to="/onboarding/age" replace />
+  if (!state.onboardingDraft.dateOfBirth) return <Navigate to="/onboarding/age" replace />
 
   const handleContinue = () => {
     if (!status) return

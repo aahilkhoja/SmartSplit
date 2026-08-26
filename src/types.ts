@@ -84,7 +84,8 @@ export interface TrendPoint {
  * step (or refreshing mid-flow) restores what was already entered instead of
  * resetting it. Cleared once the plan is confirmed. */
 export interface OnboardingDraft {
-  age?: number
+  /** ISO date string (YYYY-MM-DD), matching an <input type="date"> value. */
+  dateOfBirth?: string
   status?: ResidencyStatus
   workType?: WorkType
   incomeAmount?: number
