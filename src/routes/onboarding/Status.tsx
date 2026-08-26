@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
 import { IconCheckCircle } from '../../components/icons'
+import { useStore } from '../../lib/store'
 import type { ResidencyStatus } from '../../types'
 
 const OPTIONS: { value: ResidencyStatus; label: string; blurb: string }[] = [
@@ -11,7 +12,14 @@ const OPTIONS: { value: ResidencyStatus; label: string; blurb: string }[] = [
 
 export function OnboardingStatus() {
   const navigate = useNavigate()
-  const [status, setStatus] = useState<ResidencyStatus | null>(null)
+  const { state, updateOnboardingDraft } = useStore()
+  const [status, setStatus] = useState<ResidencyStatus | null>(state.onboardingDraft.status ?? null)
+
+  const handleContinue = () => {
+    if (!status) return
+    updateOnboardingDraft({ status })
+    navigate('/onboarding/work-type')
+  }
 
   return (
     <OnboardingLayout step={0}>
@@ -46,7 +54,7 @@ export function OnboardingStatus() {
       <button
         type="button"
         disabled={!status}
-        onClick={() => navigate('/onboarding/work-type', { state: { status } })}
+        onClick={handleContinue}
         className="mt-8 w-full rounded-full bg-accent disabled:bg-surface-2 disabled:text-muted text-bg font-semibold px-6 py-3 text-sm"
       >
         Continue

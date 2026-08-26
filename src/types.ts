@@ -76,6 +76,21 @@ export interface TrendPoint {
   expenses: number
 }
 
+/** In-progress onboarding answers, persisted so navigating back to an earlier
+ * step (or refreshing mid-flow) restores what was already entered instead of
+ * resetting it. Cleared once the plan is confirmed. */
+export interface OnboardingDraft {
+  status?: ResidencyStatus
+  workType?: WorkType
+  incomeAmount?: number
+  incomeBasis?: IncomeBasis
+  planChoice?: PlanChoice
+  spendPct?: number
+  savePct?: number
+  investPct?: number
+  spendLimit?: number
+}
+
 export interface AppState {
   auth: Auth
   profile: UserProfile | null
@@ -84,4 +99,5 @@ export interface AppState {
   transactions: Transaction[]
   alerts: Alert[]
   onboardingComplete: boolean
+  onboardingDraft: OnboardingDraft
 }

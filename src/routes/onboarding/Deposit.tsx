@@ -1,27 +1,21 @@
 import { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
 import { useStore } from '../../lib/store'
-import type { PlanChoice } from '../../types'
-
-interface DepositDraft {
-  choice: PlanChoice
-  spendPct: number
-  savePct: number
-  investPct: number
-}
 
 export function OnboardingDeposit() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const { state, confirmPlan } = useStore()
-  const draft = location.state as DepositDraft | null
+  const { state, confirmPlan, updateOnboardingDraft } = useStore()
   const profile = state.profile
+  const draft = state.onboardingDraft
 
-  const defaultLimit = profile && draft ? Math.round(profile.incomeAmount * (draft.spendPct / 100) * 0.85) : 0
-  const [spendLimit, setSpendLimit] = useState(defaultLimit)
+  const defaultLimit =
+    profile && draft.spendPct != null ? Math.round(profile.incomeAmount * (draft.spendPct / 100) * 0.85) : 0
+  const [spendLimit, setSpendLimit] = useState(draft.spendLimit ?? defaultLimit)
 
-  if (!profile || !draft) return <Navigate to="/onboarding/status" replace />
+  if (!profile || !draft.planChoice || draft.spendPct == null || draft.savePct == null || draft.investPct == null) {
+    return <Navigate to="/onboarding/status" replace />
+  }
 
   const amounts = {
     spend: Math.round(profile.incomeAmount * (draft.spendPct / 100) * 100) / 100,
@@ -29,8 +23,19 @@ export function OnboardingDeposit() {
     invest: Math.round(profile.incomeAmount * (draft.investPct / 100) * 100) / 100,
   }
 
+  const handleSpendLimitChange = (value: number) => {
+    setSpendLimit(value)
+    updateOnboardingDraft({ spendLimit: value })
+  }
+
   const handleConfirm = () => {
-    confirmPlan({ ...draft, spendLimit })
+    confirmPlan({
+      choice: draft.planChoice!,
+      spendPct: draft.spendPct!,
+      savePct: draft.savePct!,
+      investPct: draft.investPct!,
+      spendLimit,
+    })
     navigate('/dashboard')
   }
 
@@ -61,7 +66,7 @@ export function OnboardingDeposit() {
             type="number"
             min={0}
             value={spendLimit}
-            onChange={(e) => setSpendLimit(Number(e.target.value))}
+            onChange={(e) => handleSpendLimitChange(Number(e.target.value))}
             className="w-full bg-transparent px-2 py-2.5 text-sm text-onbg outline-none"
           />
         </div>

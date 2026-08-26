@@ -1,31 +1,32 @@
 import { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
 import { IconCheckCircle } from '../../components/icons'
 import { useStore } from '../../lib/store'
-import type { IncomeBasis, ResidencyStatus, WorkType } from '../../types'
+import type { IncomeBasis } from '../../types'
 
 export function OnboardingIncome() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const { setProfile } = useStore()
-  const draft = location.state as { status?: ResidencyStatus; workType?: WorkType } | null
+  const { state, setProfile, updateOnboardingDraft } = useStore()
+  const draft = state.onboardingDraft
 
-  const [amount, setAmount] = useState('')
-  const [basis, setBasis] = useState<IncomeBasis>('after-tax')
+  const [amount, setAmount] = useState(draft.incomeAmount ? String(draft.incomeAmount) : '')
+  const [basis, setBasis] = useState<IncomeBasis>(draft.incomeBasis ?? 'after-tax')
 
-  if (!draft?.status || !draft?.workType) return <Navigate to="/onboarding/status" replace />
+  if (!draft.status || !draft.workType) return <Navigate to="/onboarding/status" replace />
 
   const canContinue = Number(amount) > 0
 
   const handleContinue = () => {
     if (!canContinue) return
+    const incomeAmount = Number(amount)
     setProfile({
       status: draft.status!,
       workType: draft.workType!,
-      incomeAmount: Number(amount),
+      incomeAmount,
       incomeBasis: basis,
     })
+    updateOnboardingDraft({ incomeAmount, incomeBasis: basis })
     navigate('/onboarding/plan')
   }
 

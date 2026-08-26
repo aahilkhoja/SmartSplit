@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { AppState, Alert, BucketId, Plan, Transaction, UserProfile } from '../types'
+import type { AppState, Alert, BucketId, OnboardingDraft, Plan, Transaction, UserProfile } from '../types'
 import { seedBuckets, seedTransactions } from './mockData'
 import { monthlySpend } from './spend'
 
@@ -14,6 +14,7 @@ function freshState(): AppState {
     transactions: seedTransactions(),
     alerts: [],
     onboardingComplete: false,
+    onboardingDraft: {},
   }
 }
 
@@ -21,7 +22,9 @@ function loadState(): AppState {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (raw) {
     try {
-      return JSON.parse(raw) as AppState
+      // Spread over freshState() so fields added after someone's last save
+      // (e.g. onboardingDraft) backfill instead of coming back undefined.
+      return { ...freshState(), ...(JSON.parse(raw) as AppState) }
     } catch {
       // fall through to fresh state
     }
@@ -35,6 +38,7 @@ interface StoreContextValue {
   signIn: (displayName: string) => void
   signOut: () => void
   setProfile: (profile: UserProfile) => void
+  updateOnboardingDraft: (partial: OnboardingDraft) => void
   confirmPlan: (plan: Omit<Plan, 'confirmedAt'>) => void
   updatePlan: (plan: Omit<Plan, 'confirmedAt'>) => void
   simulatePaycheck: () => void
@@ -71,11 +75,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, profile }))
   }
 
+  const updateOnboardingDraft = (partial: OnboardingDraft) => {
+    setState((s) => ({ ...s, onboardingDraft: { ...s.onboardingDraft, ...partial } }))
+  }
+
   const confirmPlan = (plan: Omit<Plan, 'confirmedAt'>) => {
     setState((s) => ({
       ...s,
       plan: { ...plan, confirmedAt: new Date().toISOString() },
       onboardingComplete: true,
+      onboardingDraft: {},
     }))
   }
 
@@ -168,6 +177,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         signIn,
         signOut,
         setProfile,
+        updateOnboardingDraft,
         confirmPlan,
         updatePlan,
         simulatePaycheck,

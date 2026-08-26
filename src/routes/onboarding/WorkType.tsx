@@ -1,16 +1,23 @@
 import { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
 import { IconCheckCircle } from '../../components/icons'
-import type { ResidencyStatus, WorkType } from '../../types'
+import { useStore } from '../../lib/store'
+import type { WorkType } from '../../types'
 
 export function OnboardingWorkType() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const status = (location.state as { status?: ResidencyStatus } | null)?.status
-  const [workType, setWorkType] = useState<WorkType | null>(null)
+  const { state, updateOnboardingDraft } = useStore()
+  const draft = state.onboardingDraft
+  const [workType, setWorkType] = useState<WorkType | null>(draft.workType ?? null)
 
-  if (!status) return <Navigate to="/onboarding/status" replace />
+  if (!draft.status) return <Navigate to="/onboarding/status" replace />
+
+  const handleContinue = () => {
+    if (!workType) return
+    updateOnboardingDraft({ workType })
+    navigate('/onboarding/income')
+  }
 
   return (
     <OnboardingLayout step={1}>
@@ -44,7 +51,7 @@ export function OnboardingWorkType() {
       <button
         type="button"
         disabled={!workType}
-        onClick={() => navigate('/onboarding/income', { state: { status, workType } })}
+        onClick={handleContinue}
         className="mt-8 w-full rounded-full bg-accent disabled:bg-surface-2 disabled:text-muted text-bg font-semibold px-6 py-3 text-sm"
       >
         Continue

@@ -9,11 +9,16 @@ import type { PlanChoice } from '../../types'
 
 export function OnboardingPlan() {
   const navigate = useNavigate()
-  const { state } = useStore()
+  const { state, updateOnboardingDraft } = useStore()
   const profile = state.profile
+  const draft = state.onboardingDraft
 
-  const [choice, setChoice] = useState<PlanChoice | null>(null)
-  const [customSplit, setCustomSplit] = useState({ spendPct: 34, savePct: 33, investPct: 33 })
+  const [choice, setChoice] = useState<PlanChoice | null>(draft.planChoice ?? null)
+  const [customSplit, setCustomSplit] = useState(
+    draft.planChoice === 'custom' && draft.spendPct != null && draft.savePct != null && draft.investPct != null
+      ? { spendPct: draft.spendPct, savePct: draft.savePct, investPct: draft.investPct }
+      : { spendPct: 34, savePct: 33, investPct: 33 },
+  )
 
   if (!profile) return <Navigate to="/onboarding/status" replace />
 
@@ -22,9 +27,13 @@ export function OnboardingPlan() {
   const handleContinue = () => {
     if (!choice) return
     const split = choice === 'custom' ? customSplit : BIG_THREE[choice]
-    navigate('/onboarding/deposit', {
-      state: { choice, spendPct: split.spendPct, savePct: split.savePct, investPct: split.investPct },
+    updateOnboardingDraft({
+      planChoice: choice,
+      spendPct: split.spendPct,
+      savePct: split.savePct,
+      investPct: split.investPct,
     })
+    navigate('/onboarding/deposit')
   }
 
   return (
