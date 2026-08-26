@@ -40,22 +40,28 @@ export function SplitSliders({ spendPct, savePct, investPct, onChange }: SplitSl
 
   return (
     <div className="space-y-5">
-      {rows.map((row) => (
-        <div key={row.key}>
-          <div className="flex justify-between text-sm mb-1">
-            <span className="font-medium text-onbg">{row.label}</span>
-            <span className="tabular-nums text-muted">{row.value}%</span>
+      {rows.map((row) => {
+        const inputId = `split-slider-${row.key}`
+        return (
+          <div key={row.key}>
+            <div className="flex justify-between text-sm mb-1">
+              <label htmlFor={inputId} className="font-medium text-onbg">
+                {row.label}
+              </label>
+              <span className="tabular-nums text-muted">{row.value}%</span>
+            </div>
+            <input
+              id={inputId}
+              type="range"
+              min={0}
+              max={100}
+              value={row.value}
+              className="w-full"
+              onChange={(e) => handleChange(row.key, Number(e.target.value))}
+            />
           </div>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={row.value}
-            className="w-full"
-            onChange={(e) => handleChange(row.key, Number(e.target.value))}
-          />
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

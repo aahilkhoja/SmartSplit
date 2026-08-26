@@ -36,7 +36,10 @@ function ToastBody({
   }, [id, onDone])
 
   return (
-    <div className="absolute top-3 left-3 right-3 z-50">
+    // role="status" + aria-live: a sighted user sees this pop up and fade on
+    // its own, but without an explicit live region a screen reader user would
+    // never learn it appeared at all — the DOM insertion alone isn't announced.
+    <div className="absolute top-3 left-3 right-3 z-50" role="status" aria-live="polite" aria-atomic="true">
       <div className="flex items-start gap-3 rounded-2xl bg-surface-2/95 backdrop-blur border border-white/10 shadow-lg px-3.5 py-3">
         <div className="mt-0.5 h-7 w-7 shrink-0 rounded-lg bg-danger/20 flex items-center justify-center text-danger font-heading text-sm">
           !

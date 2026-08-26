@@ -56,13 +56,16 @@ export function OnboardingDeposit() {
       </div>
 
       <div className="mt-6">
-        <span className="text-xs font-medium text-muted">Monthly spend guideline</span>
+        <label htmlFor="deposit-spend-limit" className="text-xs font-medium text-muted">
+          Monthly spend guideline
+        </label>
         <p className="text-[11px] text-muted mt-0.5 mb-1">
           We'll discreetly notify you when you're close — no naggy in-app banners.
         </p>
-        <div className="flex items-center rounded-xl border border-white/10 bg-surface px-3 max-w-[180px]">
+        <div className="flex items-center rounded-xl border border-white/10 bg-surface px-3 max-w-[180px] focus-within:border-accent">
           <span className="text-muted">$</span>
           <input
+            id="deposit-spend-limit"
             type="number"
             min={0}
             value={spendLimit}

@@ -23,10 +23,19 @@ const STAGE_TIMELINE: { stage: Stage; at: number }[] = [
   { stage: 'done', at: 2500 },
 ]
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
 export function SplashIntro() {
-  const [stage, setStage] = useState<Stage>('blank')
+  // Skip straight past the animation for anyone who's told their OS they
+  // don't want motion — this splash *is* motion (scaling, crossfading), so
+  // there's no reduced-motion equivalent to show; the respectful move is to
+  // not force the wait at all rather than play it anyway or replay it silently.
+  const [stage, setStage] = useState<Stage>(() => (prefersReducedMotion() ? 'done' : 'blank'))
 
   useEffect(() => {
+    if (prefersReducedMotion()) return
     const timers = STAGE_TIMELINE.map(({ stage: s, at }) => setTimeout(() => setStage(s), at))
     return () => timers.forEach(clearTimeout)
   }, [])

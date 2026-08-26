@@ -126,17 +126,24 @@ export function Profile() {
         </div>
 
         <div>
-          <span className="text-xs font-medium text-muted">Monthly income</span>
-          <div className="mt-1 flex items-center rounded-xl border border-white/10 px-3">
+          <label htmlFor="profile-income-amount" className="text-xs font-medium text-muted">
+            Monthly income
+          </label>
+          <div className="mt-1 flex items-center rounded-xl border border-white/10 px-3 focus-within:border-accent">
             <span className="text-muted">$</span>
             <input
+              id="profile-income-amount"
               type="number"
               min={0}
               value={incomeAmount}
               onChange={(e) => setIncomeAmount(e.target.value)}
               className="w-full bg-transparent px-2 py-2 text-sm text-onbg outline-none"
             />
+            <label htmlFor="profile-income-basis" className="sr-only">
+              Before or after tax
+            </label>
             <select
+              id="profile-income-basis"
               value={incomeBasis}
               onChange={(e) => setIncomeBasis(e.target.value as IncomeBasis)}
               className="bg-transparent text-xs text-muted outline-none"
@@ -154,10 +161,13 @@ export function Profile() {
       </div>
 
       <div>
-        <span className="text-xs font-medium text-muted">Monthly spend guideline</span>
-        <div className="mt-1 flex items-center rounded-xl border border-white/10 bg-surface px-3 max-w-[180px]">
+        <label htmlFor="profile-spend-limit" className="text-xs font-medium text-muted">
+          Monthly spend guideline
+        </label>
+        <div className="mt-1 flex items-center rounded-xl border border-white/10 bg-surface px-3 max-w-[180px] focus-within:border-accent">
           <span className="text-muted">$</span>
           <input
+            id="profile-spend-limit"
             type="number"
             min={0}
             value={spendLimit}

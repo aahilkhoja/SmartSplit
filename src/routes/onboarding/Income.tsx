@@ -36,10 +36,13 @@ export function OnboardingIncome() {
       <p className="text-xs text-muted mt-1">A rough number is fine — you can always adjust later.</p>
 
       <div className="mt-6">
-        <span className="text-xs font-medium text-muted">Monthly income</span>
-        <div className="mt-1 flex items-center rounded-xl border border-white/10 bg-surface px-3">
+        <label htmlFor="income-amount" className="text-xs font-medium text-muted">
+          Monthly income
+        </label>
+        <div className="mt-1 flex items-center rounded-xl border border-white/10 bg-surface px-3 focus-within:border-accent">
           <span className="text-muted">$</span>
           <input
+            id="income-amount"
             type="number"
             min={0}
             step="0.01"
