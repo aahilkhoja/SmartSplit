@@ -4,7 +4,6 @@ import { useStore } from '../lib/store'
 import { SplitSliders } from '../components/SplitSliders'
 import { IconCheckCircle } from '../components/icons'
 import { BIG_THREE } from '../lib/splitEngine'
-import { displayName } from '../lib/format'
 import type { IncomeBasis, PlanChoice, ResidencyStatus, WorkType } from '../types'
 
 /** Whichever named plan the split now matches, or 'custom' if it no longer
@@ -21,7 +20,7 @@ function resolveChoice(split: { spendPct: number; savePct: number; investPct: nu
 }
 
 export function Profile() {
-  const { state, updatePlan, setProfile, signOut, resetAll } = useStore()
+  const { state, updatePlan, setProfile, updateAuth, signOut, resetAll } = useStore()
   const { profile, plan, auth } = state
   const navigate = useNavigate()
 
@@ -31,6 +30,7 @@ export function Profile() {
   const [workType, setWorkType] = useState<WorkType>('full-time')
   const [incomeAmount, setIncomeAmount] = useState('')
   const [incomeBasis, setIncomeBasis] = useState<IncomeBasis>('after-tax')
+  const [username, setUsername] = useState(auth.username)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
@@ -51,6 +51,9 @@ export function Profile() {
   const handleSave = () => {
     updatePlan({ choice: resolveChoice(split), ...split, spendLimit })
     setProfile({ status, workType, incomeAmount: Number(incomeAmount) || profile.incomeAmount, incomeBasis })
+    // Same too-short-to-be-real-input guard as sign-up: don't let clearing
+    // the field (or a stray character) overwrite a good username with junk.
+    if (username.trim().length >= 2) updateAuth({ username: username.trim() })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -68,8 +71,20 @@ export function Profile() {
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-surface p-4">
-        <p className="text-xs font-medium text-muted">Username</p>
-        <p className="text-sm text-onbg mt-0.5">{displayName(auth.displayName) ?? 'You'}</p>
+        <label htmlFor="profile-username" className="text-xs font-medium text-muted">
+          Username
+        </label>
+        <div className="mt-1 flex items-center rounded-xl border border-white/10 px-3 focus-within:border-accent">
+          <span className="text-muted">@</span>
+          <input
+            id="profile-username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="jurica99"
+            className="w-full bg-transparent px-2 py-2 text-sm text-onbg outline-none"
+          />
+        </div>
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-surface p-4 space-y-4">

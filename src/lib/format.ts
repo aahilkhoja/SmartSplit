@@ -12,3 +12,11 @@ export function displayName(name: string): string | null {
   const trimmed = name.trim()
   return trimmed.length >= 2 ? trimmed : null
 }
+
+/** Time-of-day greeting for the Dashboard welcome header. */
+export function timeGreeting(now = new Date()): string {
+  const hour = now.getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}

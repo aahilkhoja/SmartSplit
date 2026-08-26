@@ -52,6 +52,10 @@ export interface Alert {
 
 export interface Auth {
   displayName: string
+  /** Account handle, shown on Profile and editable there — separate from
+   * displayName so a returning user with no username yet (from before this
+   * existed) has somewhere to set one, without it blocking sign-in. */
+  username: string
   signedIn: boolean
 }
 

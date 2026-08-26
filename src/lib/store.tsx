@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { AppState, Alert, BucketId, OnboardingDraft, Plan, Transaction, UserProfile } from '../types'
+import type { Auth, AppState, Alert, BucketId, OnboardingDraft, Plan, Transaction, UserProfile } from '../types'
 import { seedBuckets, seedTransactions } from './mockData'
 import { spentThisCycle } from './spend'
 
@@ -7,7 +7,7 @@ const STORAGE_KEY = 'smartsplit.state.v2'
 
 function freshState(): AppState {
   return {
-    auth: { displayName: '', signedIn: false },
+    auth: { displayName: '', username: '', signedIn: false },
     profile: null,
     plan: null,
     buckets: seedBuckets(),
@@ -23,9 +23,14 @@ function loadState(): AppState {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (raw) {
     try {
+      const fresh = freshState()
+      const parsed = JSON.parse(raw) as AppState
       // Spread over freshState() so fields added after someone's last save
       // (e.g. onboardingDraft) backfill instead of coming back undefined.
-      return { ...freshState(), ...(JSON.parse(raw) as AppState) }
+      // auth needs its own nested merge — a top-level spread would replace
+      // the whole auth object with the saved one and lose newly-added
+      // fields like username (undefined, not backfilled to '').
+      return { ...fresh, ...parsed, auth: { ...fresh.auth, ...parsed.auth } }
     } catch {
       // fall through to fresh state
     }
@@ -35,9 +40,10 @@ function loadState(): AppState {
 
 interface StoreContextValue {
   state: AppState
-  signUp: (displayName: string) => void
+  signUp: (displayName: string, username: string) => void
   signIn: (displayName: string) => void
   signOut: () => void
+  updateAuth: (partial: Partial<Pick<Auth, 'displayName' | 'username'>>) => void
   setProfile: (profile: UserProfile) => void
   updateOnboardingDraft: (partial: OnboardingDraft) => void
   confirmPlan: (plan: Omit<Plan, 'confirmedAt'>) => void
@@ -60,16 +66,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   }, [state])
 
-  const signUp = (displayName: string) => {
-    setState((s) => ({ ...s, auth: { displayName, signedIn: true } }))
+  const signUp = (displayName: string, username: string) => {
+    setState((s) => ({ ...s, auth: { displayName, username, signedIn: true } }))
   }
 
   const signIn = (displayName: string) => {
-    setState((s) => ({ ...s, auth: { displayName: displayName || s.auth.displayName, signedIn: true } }))
+    setState((s) => ({
+      ...s,
+      auth: { ...s.auth, displayName: displayName || s.auth.displayName, signedIn: true },
+    }))
   }
 
   const signOut = () => {
     setState((s) => ({ ...s, auth: { ...s.auth, signedIn: false } }))
+  }
+
+  const updateAuth = (partial: Partial<Pick<Auth, 'displayName' | 'username'>>) => {
+    setState((s) => ({ ...s, auth: { ...s.auth, ...partial } }))
   }
 
   const setProfile = (profile: UserProfile) => {
@@ -182,6 +195,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         signUp,
         signIn,
         signOut,
+        updateAuth,
         setProfile,
         updateOnboardingDraft,
         confirmPlan,

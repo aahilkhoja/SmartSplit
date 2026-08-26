@@ -5,7 +5,7 @@ import { BucketCard } from '../components/BucketCard'
 import { TransactionList } from '../components/TransactionList'
 import { SpendLimitMeter } from '../components/SpendLimitMeter'
 import { spentThisCycle } from '../lib/spend'
-import { displayName } from '../lib/format'
+import { displayName, timeGreeting } from '../lib/format'
 import { IconBook, IconPieChart } from '../components/icons'
 
 const QUICK_LINKS = [
@@ -38,8 +38,11 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-muted">Welcome back{name ? `, ${name}` : ''}</p>
-        <h1 className="font-heading text-2xl text-onbg">Your accounts</h1>
+        <h1 className="font-heading text-2xl text-onbg">
+          {timeGreeting()}
+          {name ? `, ${name}` : ''}
+        </h1>
+        <p className="text-xs text-muted mt-1">Here's where your accounts stand today.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-3">
