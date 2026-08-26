@@ -13,7 +13,10 @@ export function SignUp() {
     return <Navigate to="/dashboard" replace />
   }
 
-  const canSubmit = name.trim().length > 0 && email.trim().length > 0 && password.length > 0
+  // A one-character name still renders (e.g. Profile's "a · revisit any
+  // answer...") but reads as broken, not like a name — require enough to
+  // actually look like one.
+  const canSubmit = name.trim().length >= 2 && email.trim().length > 0 && password.length > 0
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()

@@ -5,6 +5,7 @@ import { BucketCard } from '../components/BucketCard'
 import { TransactionList } from '../components/TransactionList'
 import { SpendLimitMeter } from '../components/SpendLimitMeter'
 import { spentThisCycle } from '../lib/spend'
+import { displayName } from '../lib/format'
 import { IconBook, IconPieChart } from '../components/icons'
 
 const QUICK_LINKS = [
@@ -17,6 +18,7 @@ export function Dashboard() {
   const { profile, plan, buckets, transactions, auth, cycleStart } = state
 
   const cycleSpend = useMemo(() => spentThisCycle(transactions, cycleStart), [transactions, cycleStart])
+  const name = displayName(auth.displayName)
 
   const handleSimulateSpend = () => {
     const mocks = [
@@ -36,7 +38,7 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-muted">Welcome back{auth.displayName ? `, ${auth.displayName}` : ''}</p>
+        <p className="text-xs text-muted">Welcome back{name ? `, ${name}` : ''}</p>
         <h1 className="font-heading text-2xl text-onbg">Your accounts</h1>
       </div>
 

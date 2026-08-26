@@ -4,6 +4,7 @@ import { useStore } from '../lib/store'
 import { SplitSliders } from '../components/SplitSliders'
 import { IconCheckCircle } from '../components/icons'
 import { BIG_THREE } from '../lib/splitEngine'
+import { displayName } from '../lib/format'
 import type { IncomeBasis, PlanChoice, ResidencyStatus, WorkType } from '../types'
 
 /** Whichever named plan the split now matches, or 'custom' if it no longer
@@ -63,9 +64,12 @@ export function Profile() {
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl text-onbg">Profile</h1>
-        <p className="text-xs text-muted mt-1">
-          {auth.displayName || 'You'} · revisit any answer whenever life changes.
-        </p>
+        <p className="text-xs text-muted mt-1">Revisit any answer whenever life changes.</p>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-surface p-4">
+        <p className="text-xs font-medium text-muted">Username</p>
+        <p className="text-sm text-onbg mt-0.5">{displayName(auth.displayName) ?? 'You'}</p>
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-surface p-4 space-y-4">

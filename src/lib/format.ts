@@ -4,3 +4,11 @@ export function formatCurrency(amount: number): string {
   const sign = amount < 0 ? '-' : ''
   return `${sign}$${Math.abs(amount).toFixed(2)}`
 }
+
+/** Treats a too-short name (a stray single letter from quick testing, an
+ * accidental space) as effectively unset, so greetings never render as an
+ * orphaned "a ·" or "Welcome back, x" next to a punctuation mark. */
+export function displayName(name: string): string | null {
+  const trimmed = name.trim()
+  return trimmed.length >= 2 ? trimmed : null
+}
