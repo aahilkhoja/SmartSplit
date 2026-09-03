@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { flushSync } from 'react-dom'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { OnboardingLayout } from '../../components/OnboardingLayout'
 import { useStore } from '../../lib/store'
@@ -29,12 +30,20 @@ export function OnboardingDeposit() {
   }
 
   const handleConfirm = () => {
-    confirmPlan({
-      choice: draft.planChoice!,
-      spendPct: draft.spendPct!,
-      savePct: draft.savePct!,
-      investPct: draft.investPct!,
-      spendLimit,
+    // flushSync forces this state update to actually commit before we
+    // navigate. Without it, navigate('/dashboard') can render the new route
+    // while confirmPlan's setState is still only *scheduled*, not applied —
+    // Dashboard's guard then sees a stale plan: null and bounces to Status,
+    // whose own guard immediately fails too since confirmPlan already
+    // cleared onboardingDraft, cascading all the way back to the Age screen.
+    flushSync(() => {
+      confirmPlan({
+        choice: draft.planChoice!,
+        spendPct: draft.spendPct!,
+        savePct: draft.savePct!,
+        investPct: draft.investPct!,
+        spendLimit,
+      })
     })
     navigate('/dashboard')
   }
